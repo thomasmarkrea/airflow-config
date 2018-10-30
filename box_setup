@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+#
+# Airflow box setup
+
+# proxy settings
+# needed to install through corp network
+# export http_proxy=
+# export https_proxy=
+
+# update system
+sudo apt-get update
+sudo apt-get -y upgrade
+
+# install python
+sudo apt-get install -y python3
+sudo apt-get install -y python3-dev
+sudo apt-get install -y python3-venv
+
+# install database dependencies
+sudo apt-get install -y mysql-server
+sudo apt-get install -y libmysqlclient-dev
+sudo apt-get install -y redis-server
+
+# set ENV vars
+export AIRFLOW_HOME=${HOME}/airflow
+export AIRFLOW_VENV=${AIRFLOW_HOME}/.venv
+
+# create Airflow home dir
+mkdir -p ${AIRFLOW_HOME}
+
+# create python virtual env
+python3 -m venv ${AIRFLOW_VENV}
+source ${AIRFLOW_VENV}/bin/activate
+
+# install airflow
+pip install apache-airflow
+pip install apache-airflow[celery]
+pip install apache-airflow[crypto]
+pip install apache-airflow[gcp_api]
+pip install apache-airflow[mysql]
+pip install apache-airflow[postgres]
+pip install apache-airflow[redis]
+pip install apache-airflow[s3]
+pip install apache-airflow[slack]
