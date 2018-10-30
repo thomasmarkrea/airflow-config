@@ -24,6 +24,7 @@ sudo apt-get install -y redis-server
 # set ENV vars
 export AIRFLOW_HOME=${HOME}/airflow
 export AIRFLOW_VENV=${AIRFLOW_HOME}/.venv
+export SLUGIFY_USES_TEXT_UNIDECODE=yes
 
 # create Airflow home dir
 mkdir -p ${AIRFLOW_HOME}
