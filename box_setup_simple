@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+#
+# Airflow box setup
+# Simple airflow setup using SQLite backend and SequentialExecutor
+# no good for production, but can be used for testing/learning
+
+# update system
+sudo apt-get update
+sudo apt-get -y upgrade
+
+# install python
+sudo apt-get install -y python3
+sudo apt-get install -y python3-dev
+sudo apt-get install -y python3-venv
+
+# set ENV vars
+export AIRFLOW_HOME=${HOME}/airflow
+export AIRFLOW_VENV=${AIRFLOW_HOME}/.venv
+export SLUGIFY_USES_TEXT_UNIDECODE=yes
+
+# create Airflow home dir
+mkdir -p ${AIRFLOW_HOME}
+
+# create python virtual env
+python3 -m venv ${AIRFLOW_VENV}
+source ${AIRFLOW_VENV}/bin/activate
+
+# install airflow
+pip install apache-airflow
