@@ -7,6 +7,11 @@
 # export http_proxy=
 # export https_proxy=
 
+# set ENV vars
+set -a
+source ./airflow.env
+set +a
+
 # update system
 sudo apt-get update
 sudo apt-get -y upgrade
@@ -15,16 +20,37 @@ sudo apt-get -y upgrade
 sudo apt-get install -y python3
 sudo apt-get install -y python3-dev
 sudo apt-get install -y python3-venv
+sudo apt-get install -y build-essential
 
 # install database dependencies
 sudo apt-get install -y mysql-server
 sudo apt-get install -y libmysqlclient-dev
 sudo apt-get install -y redis-server
 
-# set ENV vars
-export AIRFLOW_HOME=${HOME}/airflow
-export AIRFLOW_VENV=${AIRFLOW_HOME}/.venv
-export SLUGIFY_USES_TEXT_UNIDECODE=yes
+# check services are running
+systemctl status mysql.service
+systemctl status redis.service
+
+# setup MySQL backend
+ln -s ${AIRFLOW_ENVIRONMENT}/airflow_mysql.cnf /etc/mysql/conf.d/
+systemctl restart mysql.service
+
+sudo mysql -u root \
+  -e "CREATE USER 'airflow'@'localhost'
+      IDENTIFIED BY 'airflow';"
+
+sudo mysql -u root \
+  -e "CREATE DATABASE airflow
+      DEFAULT CHARACTER SET utf8
+      DEFAULT COLLATE utf8_general_ci;"
+
+sudo mysql -u root \
+  -e "GRANT ALL ON airflow.* TO 'airflow'@'localhost';
+      FLUSH PRIVILEGES;"
+
+# check mysql setup
+sudo mysql -u root \
+  -e "SELECT user FROM mysql.user;"
 
 # create Airflow home dir
 mkdir -p ${AIRFLOW_HOME}
