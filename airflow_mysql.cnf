@@ -1,0 +1,7 @@
+# MySQL database server configuration file.
+#
+# Copy to /etc/mysql/conf.d/
+# https://airflow.incubator.apache.org/howto/initialize-database.html
+
+[mysqld]
+explicit_defaults_for_timestamp = 1
